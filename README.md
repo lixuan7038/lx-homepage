@@ -1,2 +1,2 @@
-# lx-web
-开源代码
+# lx-homepage
+开源代码 个人主页
