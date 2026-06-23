@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黎轩博客 - 个人主页</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    
+    <nav>
+        <div class="nav-container">
+            <div class="logo">黎轩博客</div>
+            <div class="nav-right">
+                <div class="nav-links">
+                    <a href="#profile" data-i18n="profile">个人简介</a>
+                    <a href="#experience" data-i18n="experience">成长经历</a>
+                    <a href="#skills" data-i18n="skills">技能专长</a>
+                    <a href="#projects" data-i18n="projects">项目展示</a>
+                    <a href="#contact" data-i18n="contact">联系方式</a>
+                </div>
+                <div class="lang-switcher">
+                    <div class="current-lang-btn" onclick="toggleLangMenu()">
+                        <span>🌐</span>
+                        <span id="lang-text">中文</span>
+                    </div>
+                    <div class="lang-menu" id="lang-menu">
+                        <div class="lang-option" data-lang="zh" onclick="changeLanguage('zh')">中文</div>
+                        <div class="lang-option" data-lang="en" onclick="changeLanguage('en')">English</div>
+                        <div class="lang-option" data-lang="ja" onclick="changeLanguage('ja')">日本語</div>
+                        <div class="lang-option" data-lang="ko" onclick="changeLanguage('ko')">한국어</div>
+                    </div>
+                </div>
+                <div class="nav-btn" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </div>
+                <div class="style-switcher">
+                    <div class="current-style-btn" onclick="toggleStyleMenu()">
+                        <div class="style-dot" id="current-style-dot"></div>
+                    </div>
+                    <div class="style-menu" id="style-menu">
+                        <div class="style-option" data-style="purple" onclick="changeStyle('purple')"></div>
+                        <div class="style-option" data-style="blue" onclick="changeStyle('blue')"></div>
+                        <div class="style-option" data-style="yellow" onclick="changeStyle('yellow')"></div>
+                    </div>
+                </div>
+                <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section id="profile" class="section">
+            <h2 class="section-title" data-i18n="profile_title">个人简介</h2>
+            <div class="profile-header">
+                <div class="avatar-wrapper">
+                    <img src="image/touxiang.jpg" alt="头像" class="avatar">
+                </div>
+                <div class="profile-info">
+                    <h1>黎轩</h1>
+                    <div class="profile-title" data-i18n="profile_position">网络安全工程师 | 渗透测试专家</div>
+                    <p class="profile-desc" data-i18n="profile_desc">
+                        专注网络安全领域，精通渗透测试与漏洞挖掘。拥有3年以上安全从业经验，擅长Web安全、移动端安全及内网渗透。
+                        热爱信息安全技术，持有CISP-PTE、OSCP等专业认证，参与过多个众测项目并获致谢。
+                        始终站在攻击者视角，帮助企业发现安全隐患，保障系统安全。
+                    </p>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">3+</div>
+                    <div class="stat-label" data-i18n="stat_years">年安全经验</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">200+</div>
+                    <div class="stat-label" data-i18n="stat_projects">漏洞发现</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label" data-i18n="stat_articles">CVE编号</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label" data-i18n="stat_visitors">访客数量</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="section">
+            <h2 class="section-title" data-i18n="experience_title">成长经历</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2024 - 至今</div>
+                    <div class="timeline-title" data-i18n="exp_1_title">安全研究员 @ 某安全厂商</div>
+                    <div class="timeline-desc" data-i18n="exp_1_desc">负责红队攻击与渗透测试工作，参与国家级护网行动，为金融、运营商等行业客户提供安全评估服务。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2021 - 2024</div>
+                    <div class="timeline-title" data-i18n="exp_2_title">安全工程师 @ 互联网企业</div>
+                    <div class="timeline-desc" data-i18n="exp_2_desc">负责Web应用安全测试与代码审计，建立安全开发规范，推进SDL安全开发生命周期建设。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2019 - 2021</div>
+                    <div class="timeline-title" data-i18n="exp_3_title">安全实习生 @ 网络安全公司</div>
+                    <div class="timeline-desc" data-i18n="exp_3_desc">参与渗透测试项目，学习漏洞挖掘技术，独立完成多个Web安全测试任务。</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2015 - 2019</div>
+                    <div class="timeline-title" data-i18n="exp_4_title">本科学习 @ 网络空间安全学院</div>
+                    <div class="timeline-desc" data-i18n="exp_4_desc">主修网络空间安全专业，系统学习密码学、网络攻防、安全协议等核心课程。</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="section">
+            <h2 class="section-title" data-i18n="skills_title">技能专长</h2>
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">Burp Suite</span>
+                        <span class="skill-percent">95%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 95%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">Nmap/AWVS</span>
+                        <span class="skill-percent">92%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 92%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">SQLMap/Hydra</span>
+                        <span class="skill-percent">88%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 88%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">Metasploit</span>
+                        <span class="skill-percent">85%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">Wireshark</span>
+                        <span class="skill-percent">82%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 82%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">Xray/Goby</span>
+                        <span class="skill-percent">80%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 80%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">Python/POC</span>
+                        <span class="skill-percent">90%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 90%"></div>
+                    </div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-header">
+                        <span class="skill-name">Linux/Shell</span>
+                        <span class="skill-percent">85%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: 85%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="section">
+            <h2 class="section-title" data-i18n="projects_title">项目展示</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-title" data-i18n="project_1_title">漏洞扫描器</div>
+                    <div class="project-desc" data-i18n="project_1_desc">基于Python开发的自动化漏洞扫描工具，支持Web指纹识别、弱口令检测、SQL注入、XSS等常见漏洞检测。</div>
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">漏洞检测</span>
+                        <span class="project-tag">自动化</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-title" data-i18n="project_2_title">内网渗透框架</div>
+                    <div class="project-desc" data-i18n="project_2_desc">Go语言开发的内网渗透测试框架，支持端口转发、横向移动、权限维持等功能，适合红队攻防演练使用。</div>
+                    <div class="project-tags">
+                        <span class="project-tag">Go</span>
+                        <span class="project-tag">内网渗透</span>
+                        <span class="project-tag">红队工具</span>
+                    </div>
+                </div>
+                <div class="project-card" onclick="openScribble()">
+                    <div class="project-title" data-i18n="project_3_title">Scribble 画图软件</div>
+                    <div class="project-desc" data-i18n="project_3_desc">基于HTML5 Canvas开发的在线画图工具，支持多种画笔颜色、粗细调节、橡皮擦功能，可保存画作。界面简洁流畅，支持触屏操作。</div>
+                    <div class="project-tags">
+                        <span class="project-tag">HTML5</span>
+                        <span class="project-tag">Canvas</span>
+                        <span class="project-tag">JavaScript</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section">
+            <h2 class="section-title" data-i18n="contact_title">联系方式</h2>
+            <div class="contact-section">
+                <div class="contact-card">
+                    <div class="contact-icon">📧</div>
+                    <div class="contact-info">
+                        <h4 data-i18n="contact_email">电子邮箱</h4>
+                        <p><a href="mailto:lixaun7038@outlook.com">lixaun7038@outlook.com</a></p>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">💻</div>
+                    <div class="contact-info">
+                        <h4 data-i18n="contact_github">GitHub</h4>
+                        <p><a href="https://github.com/lixuan7038" target="_blank" rel="noopener noreferrer">@lixuan7038</a></p>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">🌐</div>
+                    <div class="contact-info">
+                        <h4 data-i18n="contact_website">个人网站</h4>
+                        <p><a href="https://lixuan.cyou" target="_blank">lixuan.cyou</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="copyright">© 2026 黎轩博客. All rights reserved.</div>
+        <div class="links-footer">
+            <a href="https://owasp.org" target="_blank">OWASP</a>
+            <a href="https://cve.mitre.org" target="_blank">CVE</a>
+            <a href="https://nvd.nist.gov" target="_blank">NVD</a>
+            <a href="https://www.hackthebox.com" target="_blank">HackTheBox</a>
+            <a href="https://tryhackme.com" target="_blank">TryHackMe</a>
+            <a href="https://www.freebuf.com" target="_blank">FreeBuf</a>
+        </div>
+        <div class="ip-display">
+            <span>🌐本机IP:</span>
+            <span id="ip-address">Loading...</span>
+        </div>
+        <div class="beian">
+            <span>🔒</span>
+            <a href="https://beian.miit.gov.cn" target="_blank">京ICP备备案中...号</a>
+        </div>
+    </footer>
+
+    <div class="back-to-top" onclick="scrollToTop()">↑</div>
+
+    <script src="js/api.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

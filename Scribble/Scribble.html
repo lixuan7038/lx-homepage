@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scribble 画图软件</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --light: #A78BFA;
+            --lightest: #C4B5FD;
+            --primary-rgb: 139, 92, 246;
+            --light-rgb: 167, 139, 250;
+            --bg-dark: #0F0F1A;
+            --bg-card: #1A1A2E;
+            --bg-card-hover: #252542;
+            --text-white: #FFFFFF;
+            --text-gray: #A1A1AA;
+            --text-light: #D4D4D8;
+            --border-color: rgba(139, 92, 246, 0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        body.style-blue {
+            --primary: #3B82F6;
+            --light: #60A5FA;
+            --lightest: #93C5FD;
+            --primary-rgb: 59, 130, 246;
+            --light-rgb: 96, 165, 250;
+            --border-color: rgba(59, 130, 246, 0.15);
+        }
+
+        body.style-yellow {
+            --primary: #F59E0B;
+            --light: #FBBF24;
+            --lightest: #FCD34D;
+            --primary-rgb: 245, 158, 11;
+            --light-rgb: 251, 191, 36;
+            --border-color: rgba(245, 158, 11, 0.15);
+        }
+
+        body.light-mode {
+            --bg-dark: #F8F7FF;
+            --bg-card: #FFFFFF;
+            --bg-card-hover: #F0F0FF;
+            --text-white: #1F1B24;
+            --text-gray: #6B7280;
+            --text-light: #9CA3AF;
+            --border-color: rgba(var(--primary-rgb), 0.1);
+        }
+
+        body.style-blue.light-mode {
+            --border-color: rgba(var(--primary-rgb), 0.1);
+        }
+
+        body.style-yellow.light-mode {
+            --border-color: rgba(var(--primary-rgb), 0.1);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(var(--primary-rgb), 0.15);
+            border: 1px solid rgba(var(--primary-rgb), 0.3);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            color: var(--text-gray);
+            z-index: 100;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(var(--primary-rgb), 0.25);
+            border-color: var(--primary);
+            color: var(--lightest);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            color: var(--text-white);
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .toolbar {
+            background: var(--bg-card);
+            padding: 20px 28px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            max-width: 1200px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .toolbar:hover {
+            border-color: rgba(var(--primary-rgb), 0.3);
+        }
+
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(var(--primary-rgb), 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(var(--primary-rgb), 0.1);
+        }
+
+        .tool-group label {
+            font-size: 13px;
+            color: var(--text-gray);
+            font-weight: 500;
+            min-width: 50px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: rgba(var(--primary-rgb), 0.15);
+            color: var(--light);
+            border: 1px solid rgba(var(--primary-rgb), 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: rgba(var(--primary-rgb), 0.25);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn.active {
+            background: rgba(var(--primary-rgb), 0.3);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.3);
+        }
+
+        .btn-danger {
+            background: rgba(231, 76, 60, 0.15);
+            border-color: rgba(231, 76, 60, 0.3);
+            color: #E74C3C;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: rgba(231, 76, 60, 0.25);
+            border-color: #E74C3C;
+        }
+
+        .btn-success {
+            background: rgba(39, 174, 96, 0.15);
+            border-color: rgba(39, 174, 96, 0.3);
+            color: #27AE60;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: rgba(39, 174, 96, 0.25);
+            border-color: #27AE60;
+        }
+
+        .btn-icon {
+            font-size: 16px;
+        }
+
+        .color-presets {
+            display: flex;
+            gap: 6px;
+        }
+
+        .color-preset {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid rgba(var(--primary-rgb), 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .color-preset:hover {
+            transform: scale(1.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .color-preset.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.3);
+        }
+
+        input[type="color"] {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(var(--primary-rgb), 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 0;
+            background: transparent;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 2px;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border-radius: 6px;
+            border: none;
+        }
+
+        input[type="range"] {
+            width: 100px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .size-display {
+            min-width: 40px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        .canvas-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        #canvas {
+            display: block;
+            border-radius: 10px;
+            cursor: crosshair;
+            background: #FFFFFF;
+            position: relative;
+        }
+
+        .eraser-cursor {
+            position: fixed;
+            border: 2px solid rgba(var(--primary-rgb), 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.4);
+            display: none;
+            transform: translate(-50%, -50%);
+        }
+
+        .footer {
+            margin-top: 25px;
+            color: var(--text-gray);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .shortcuts {
+            margin-top: 15px;
+            padding: 15px 20px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .shortcuts h3 {
+            color: var(--text-white);
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .shortcuts-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .shortcut-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .shortcut-key {
+            background: rgba(var(--primary-rgb), 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--light);
+        }
+
+        .shape-preview {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            color: var(--text-white);
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-btn">
+        <span>←</span>
+        <span>返回主页</span>
+    </a>
+    
+    <h1>Scribble 画图软件</h1>
+    
+    <div class="toolbar">
+        <div class="tool-group">
+            <label>颜色</label>
+            <div class="color-presets">
+                <div class="color-preset active" style="background: #000000" data-color="#000000"></div>
+                <div class="color-preset" style="background: #FF0000" data-color="#FF0000"></div>
+                <div class="color-preset" style="background: #00FF00" data-color="#00FF00"></div>
+                <div class="color-preset" style="background: #0000FF" data-color="#0000FF"></div>
+                <div class="color-preset" style="background: #FFFF00" data-color="#FFFF00"></div>
+                <div class="color-preset" style="background: #FF00FF" data-color="#FF00FF"></div>
+                <div class="color-preset" style="background: #00FFFF" data-color="#00FFFF"></div>
+            </div>
+            <input type="color" id="colorPicker" value="#000000">
+        </div>
+        
+        <div class="tool-group">
+            <label>粗细</label>
+            <input type="range" id="brushSize" min="1" max="50" value="5">
+            <span class="size-display" id="sizeDisplay">5px</span>
+        </div>
+        
+        <div class="tool-group">
+            <label>工具</label>
+            <button class="btn active" id="brushBtn" title="画笔 (B)">
+                <span class="btn-icon">✏️</span>
+                <span>画笔</span>
+            </button>
+            <button class="btn" id="eraserBtn" title="橡皮擦 (E)">
+                <span class="btn-icon">🧹</span>
+                <span>橡皮</span>
+            </button>
+        </div>
+        
+        <div class="tool-group">
+            <label>形状</label>
+            <button class="btn" id="lineBtn" title="直线 (L)">
+                <span class="btn-icon">📏</span>
+                <span>直线</span>
+            </button>
+            <button class="btn" id="rectBtn" title="矩形 (R)">
+                <span class="btn-icon">⬜</span>
+                <span>矩形</span>
+            </button>
+            <button class="btn" id="circleBtn" title="圆形 (C)">
+                <span class="btn-icon">⭕</span>
+                <span>圆形</span>
+            </button>
+        </div>
+        
+        <div class="tool-group">
+            <label>操作</label>
+            <button class="btn" id="undoBtn" title="撤销 (Ctrl+Z)" disabled>
+                <span class="btn-icon">↩️</span>
+                <span>撤销</span>
+            </button>
+            <button class="btn" id="redoBtn" title="重做 (Ctrl+Y)" disabled>
+                <span class="btn-icon">↪️</span>
+                <span>重做</span>
+            </button>
+        </div>
+        
+        <div class="tool-group">
+            <label>其他</label>
+            <button class="btn" id="fillBtn" title="填充画布">
+                <span class="btn-icon">🪣</span>
+                <span>填充</span>
+            </button>
+            <button class="btn btn-danger" id="clearBtn" title="清空画布">
+                <span class="btn-icon">🗑️</span>
+                <span>清空</span>
+            </button>
+            <button class="btn btn-success" id="saveBtn" title="保存图片 (Ctrl+S)">
+                <span class="btn-icon">💾</span>
+                <span>保存</span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="canvas-container">
+        <canvas id="canvas" width="1000" height="600"></canvas>
+        <div class="eraser-cursor" id="eraserCursor"></div>
+    </div>
+    
+    <div class="footer">点击画布开始绘画 | 支持触屏操作</div>
+    
+    <div class="shortcuts">
+        <h3>⌨️ 快捷键</h3>
+        <div class="shortcuts-grid">
+            <div class="shortcut-item"><span>画笔</span><span class="shortcut-key">B</span></div>
+            <div class="shortcut-item"><span>橡皮擦</span><span class="shortcut-key">E</span></div>
+            <div class="shortcut-item"><span>直线</span><span class="shortcut-key">L</span></div>
+            <div class="shortcut-item"><span>矩形</span><span class="shortcut-key">R</span></div>
+            <div class="shortcut-item"><span>圆形</span><span class="shortcut-key">C</span></div>
+            <div class="shortcut-item"><span>撤销</span><span class="shortcut-key">Ctrl+Z</span></div>
+            <div class="shortcut-item"><span>重做</span><span class="shortcut-key">Ctrl+Y</span></div>
+            <div class="shortcut-item"><span>保存</span><span class="shortcut-key">Ctrl+S</span></div>
+            <div class="shortcut-item"><span>清空</span><span class="shortcut-key">Delete</span></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const style = urlParams.get('style');
+        if (style) {
+            document.body.classList.add(`style-${style}`);
+        }
+
+        function applyTimeMode() {
+            const hour = new Date().getHours();
+            const isDay = hour >= 6 && hour < 18;
+            const savedMode = localStorage.getItem('themeMode');
+            if (savedMode !== null) {
+                document.body.classList.toggle('light-mode', savedMode === 'light');
+            } else {
+                document.body.classList.toggle('light-mode', isDay);
+            }
+        }
+        applyTimeMode();
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const colorPicker = document.getElementById('colorPicker');
+        const brushSize = document.getElementById('brushSize');
+        const sizeDisplay = document.getElementById('sizeDisplay');
+        const colorPresets = document.querySelectorAll('.color-preset');
+        const toast = document.getElementById('toast');
+        const eraserCursor = document.getElementById('eraserCursor');
+
+        const buttons = {
+            brush: document.getElementById('brushBtn'),
+            eraser: document.getElementById('eraserBtn'),
+            line: document.getElementById('lineBtn'),
+            rect: document.getElementById('rectBtn'),
+            circle: document.getElementById('circleBtn'),
+            undo: document.getElementById('undoBtn'),
+            redo: document.getElementById('redoBtn'),
+            fill: document.getElementById('fillBtn'),
+            clear: document.getElementById('clearBtn'),
+            save: document.getElementById('saveBtn')
+        };
+
+        let isDrawing = false;
+        let startX = 0;
+        let startY = 0;
+        let currentTool = 'brush';
+        let currentColor = '#000000';
+        let currentSize = 5;
+        let history = [];
+        let historyIndex = -1;
+        const maxHistory = 50;
+        let canvasSnapshot = null;
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        
+        saveState();
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function saveState() {
+            historyIndex++;
+            history = history.slice(0, historyIndex);
+            history.push(canvas.toDataURL());
+            if (history.length > maxHistory) {
+                history.shift();
+                historyIndex--;
+            }
+            updateHistoryButtons();
+        }
+
+        function updateHistoryButtons() {
+            buttons.undo.disabled = historyIndex <= 0;
+            buttons.redo.disabled = historyIndex >= history.length - 1;
+        }
+
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                loadState(history[historyIndex]);
+                updateHistoryButtons();
+                showToast('已撤销');
+            }
+        }
+
+        function redo() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                loadState(history[historyIndex]);
+                updateHistoryButtons();
+                showToast('已重做');
+            }
+        }
+
+        function loadState(dataUrl) {
+            const img = new Image();
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+            };
+            img.src = dataUrl;
+        }
+
+        function getPosition(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            if (e.touches) {
+                return {
+                    x: (e.touches[0].clientX - rect.left) * scaleX,
+                    y: (e.touches[0].clientY - rect.top) * scaleY
+                };
+            }
+            return {
+                x: (e.clientX - rect.left) * scaleX,
+                y: (e.clientY - rect.top) * scaleY
+            };
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const pos = getPosition(e);
+            startX = pos.x;
+            startY = pos.y;
+            
+            if (currentTool === 'brush' || currentTool === 'eraser') {
+                ctx.beginPath();
+                ctx.arc(startX, startY, currentSize / 2, 0, Math.PI * 2);
+                ctx.fillStyle = currentTool === 'eraser' ? '#ffffff' : currentColor;
+                ctx.fill();
+            } else {
+                canvasSnapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            
+            const pos = getPosition(e);
+            
+            if (currentTool === 'brush' || currentTool === 'eraser') {
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : currentColor;
+                ctx.lineWidth = currentSize;
+                ctx.stroke();
+                startX = pos.x;
+                startY = pos.y;
+            } else {
+                ctx.putImageData(canvasSnapshot, 0, 0);
+                drawShape(startX, startY, pos.x, pos.y);
+            }
+        }
+
+        function stopDrawing() {
+            if (isDrawing) {
+                isDrawing = false;
+                saveState();
+            }
+        }
+
+        function drawShape(x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = currentSize;
+            
+            switch (currentTool) {
+                case 'line':
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                    break;
+                case 'rect':
+                    ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+                    break;
+                case 'circle':
+                    const radius = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                    ctx.arc(x1, y1, radius, 0, Math.PI * 2);
+                    ctx.stroke();
+                    break;
+            }
+        }
+
+        function setTool(tool) {
+            currentTool = tool;
+            Object.keys(buttons).forEach(key => {
+                if (['brush', 'eraser', 'line', 'rect', 'circle'].includes(key)) {
+                    buttons[key].classList.remove('active');
+                }
+            });
+            buttons[tool].classList.add('active');
+            
+            if (tool === 'eraser') {
+                canvas.style.cursor = 'none';
+                eraserCursor.style.display = 'block';
+                updateEraserCursorSize();
+            } else {
+                canvas.style.cursor = 'crosshair';
+                eraserCursor.style.display = 'none';
+            }
+        }
+        
+        function updateEraserCursorSize() {
+            const size = currentSize;
+            eraserCursor.style.width = size + 'px';
+            eraserCursor.style.height = size + 'px';
+        }
+
+        function clearCanvas() {
+            if (confirm('确定要清空画布吗？')) {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                saveState();
+                showToast('画布已清空');
+            }
+        }
+
+        function fillCanvas() {
+            ctx.fillStyle = currentColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            saveState();
+            showToast('画布已填充');
+        }
+
+        function saveImage() {
+            const link = document.createElement('a');
+            link.download = 'scribble-' + Date.now() + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast('图片已保存');
+        }
+
+        function setColor(color) {
+            currentColor = color;
+            colorPicker.value = color;
+            colorPresets.forEach(preset => {
+                preset.classList.toggle('active', preset.dataset.color === color);
+            });
+            if (currentTool === 'eraser') {
+                setTool('brush');
+            }
+        }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startDrawing(e);
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            draw(e);
+        });
+        canvas.addEventListener('touchend', stopDrawing);
+
+        colorPicker.addEventListener('input', (e) => {
+            setColor(e.target.value);
+        });
+
+        colorPresets.forEach(preset => {
+            preset.addEventListener('click', () => {
+                setColor(preset.dataset.color);
+            });
+        });
+
+        brushSize.addEventListener('input', (e) => {
+            currentSize = parseInt(e.target.value);
+            sizeDisplay.textContent = currentSize + 'px';
+            if (currentTool === 'eraser') {
+                updateEraserCursorSize();
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (currentTool === 'eraser') {
+                eraserCursor.style.left = e.clientX + 'px';
+                eraserCursor.style.top = e.clientY + 'px';
+            }
+        });
+
+        buttons.brush.addEventListener('click', () => setTool('brush'));
+        buttons.eraser.addEventListener('click', () => setTool('eraser'));
+        buttons.line.addEventListener('click', () => setTool('line'));
+        buttons.rect.addEventListener('click', () => setTool('rect'));
+        buttons.circle.addEventListener('click', () => setTool('circle'));
+        buttons.undo.addEventListener('click', undo);
+        buttons.redo.addEventListener('click', redo);
+        buttons.clear.addEventListener('click', clearCanvas);
+        buttons.fill.addEventListener('click', fillCanvas);
+        buttons.save.addEventListener('click', saveImage);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === 'z') {
+                    e.preventDefault();
+                    undo();
+                } else if (e.key === 'y') {
+                    e.preventDefault();
+                    redo();
+                } else if (e.key === 's') {
+                    e.preventDefault();
+                    saveImage();
+                }
+            } else {
+                switch (e.key.toLowerCase()) {
+                    case 'b': setTool('brush'); break;
+                    case 'e': setTool('eraser'); break;
+                    case 'l': setTool('line'); break;
+                    case 'r': setTool('rect'); break;
+                    case 'c': setTool('circle'); break;
+                    case 'delete':
+                    case 'backspace':
+                        e.preventDefault();
+                        clearCanvas();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
